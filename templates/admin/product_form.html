@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'প্রডাক্ট এডিট' if product else 'নতুন প্রডাক্ট' }}{% endblock %}
+{% block content %}
+<section class="single-card narrow-card wide-card">
+  <h1>{{ 'প্রডাক্ট এডিট' if product else 'নতুন প্রডাক্ট যোগ করুন' }}</h1>
+  <p class="notice">প্রডাক্ট ছবি অবশ্যই ঠিক ৩০০ x ৩০০ পিক্সেল হতে হবে।</p>
+  <form method="post" enctype="multipart/form-data" class="stack-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label>প্রডাক্ট নাম</label><input name="name" required value="{{ request.form.get('name', product.name if product else '') }}">
+    <label>প্রডাক্ট আইডি (Unique)</label><input name="product_code" required value="{{ request.form.get('product_code', product.product_code if product else '') }}">
+    <label>দাম (৳)</label><input type="number" step="0.01" min="0" name="price" required value="{{ request.form.get('price', product.price if product else '') }}">
+    <label>ক্যাটাগরি</label>
+    <select id="category" name="category" required>
+      <option value="">নির্বাচন করুন</option>
+      {% for cat in CATEGORIES %}<option value="{{ cat }}" {% if request.form.get('category', product.category if product else '') == cat %}selected{% endif %}>{{ cat }}</option>{% endfor %}
+    </select>
+    <label>সাব-ক্যাটাগরি</label>
+    <select id="subcategory" name="subcategory" data-selected="{{ request.form.get('subcategory', product.subcategory if product else '') }}" required></select>
+    <label>৩০০ x ৩০০ ছবি {% if product %}(পরিবর্তন না করলে ফাঁকা রাখুন){% endif %}</label><input type="file" name="image" accept="image/jpeg,image/png,image/webp" {% if not product %}required{% endif %}>
+    {% if product %}<img class="preview-image" src="{{ url_for('product_image', product_id=product.id) }}" alt="বর্তমান ছবি">{% endif %}
+    <label>বিস্তারিত</label><textarea name="details" rows="7">{{ request.form.get('details', product.details if product and product.details else '') }}</textarea>
+    <button class="primary-btn" type="submit">{{ 'আপডেট করুন' if product else 'আপলোড করুন' }}</button>
+  </form>
+</section>
+<script>
+const categories = {{ CATEGORIES|tojson }};
+const cat = document.getElementById('category');
+const sub = document.getElementById('subcategory');
+function loadSubs(){
+  const selected = sub.dataset.selected;
+  sub.innerHTML = '<option value="">নির্বাচন করুন</option>';
+  (categories[cat.value] || []).forEach(v => {
+    const o = document.createElement('option'); o.value=v; o.textContent=v; if(v===selected) o.selected=true; sub.appendChild(o);
+  });
+  sub.dataset.selected = '';
+}
+cat.addEventListener('change', loadSubs); loadSubs();
+</script>
+{% endblock %}

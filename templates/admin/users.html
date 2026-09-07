@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}একাউন্ট ম্যানেজমেন্ট{% endblock %}
+{% block content %}
+<section class="single-card">
+  <h1>একাউন্ট ম্যানেজমেন্ট</h1>
+  <div class="table-wrap"><table><thead><tr><th>নাম</th><th>রোল</th><th>ইমেইল</th><th>ফোন</th><th>স্ট্যাটাস</th><th>অ্যাকশন</th></tr></thead><tbody>
+  {% for u in users %}
+  <tr>
+    <td>{{ u.name }}</td><td>{{ u.role }}</td><td>{{ u.email }}</td><td>{{ u.phone }}</td>
+    <td>{% if u.is_banned %}<span class="pill danger-pill">Banned</span>{% elif u.role=='admin' and not u.admin_approved %}<span class="pill">Pending Admin</span>{% else %}<span class="pill">Active</span>{% endif %}</td>
+    <td>
+      {% if not u.is_banned and u.id != current_user.id %}
+      <form method="post" action="{{ url_for('admin_ban_user', user_id=u.id) }}" class="inline-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input name="reason" placeholder="ব্যানের কারণ"><button class="danger-btn" type="submit">Ban</button>
+      </form>
+      {% else %}—{% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+  </tbody></table></div>
+</section>
+{% endblock %}

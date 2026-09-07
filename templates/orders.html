@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}অর্ডার হিস্টোরি{% endblock %}
+{% block content %}
+<section class="single-card">
+  <h1>অর্ডার হিস্টোরি</h1>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>ইনভয়েস</th><th>তারিখ</th><th>মোট</th><th>স্ট্যাটাস</th><th></th></tr></thead>
+      <tbody>
+      {% for order in orders %}
+      <tr>
+        <td>{{ order.invoice_no }}</td>
+        <td>{{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+        <td>৳{{ order.total_amount|money }}</td>
+        <td><span class="pill">{{ order.status }}</span></td>
+        <td><a href="{{ url_for('invoice', order_id=order.id) }}">ইনভয়েস</a></td>
+      </tr>
+      {% else %}<tr><td colspan="5">এখনো কোনো অর্ডার নেই।</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

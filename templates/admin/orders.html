@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}সব অর্ডার{% endblock %}
+{% block content %}
+<section class="single-card">
+  <h1>সব অর্ডার / অ্যাডমিন কপি</h1>
+  <div class="table-wrap"><table><thead><tr><th>ইনভয়েস</th><th>ক্রেতা</th><th>মোট</th><th>তারিখ</th><th>স্ট্যাটাস</th><th></th></tr></thead><tbody>
+  {% for o in orders %}<tr>
+    <td><a href="{{ url_for('invoice', order_id=o.id) }}">{{ o.invoice_no }}</a></td><td>{{ o.user.name }}<br><small>{{ o.user.email }} · {{ o.user.phone }}</small></td><td>৳{{ o.total_amount|money }}</td><td>{{ o.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+    <td><form method="post" action="{{ url_for('admin_order_status', order_id=o.id) }}" class="inline-form"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><select name="status">{% for s in ['Pending','Confirmed','Processing','Shipped','Delivered','Cancelled'] %}<option value="{{ s }}" {% if o.status==s %}selected{% endif %}>{{ s }}</option>{% endfor %}</select><button class="secondary-btn" type="submit">Save</button></form></td>
+    <td><a href="{{ url_for('invoice_pdf', order_id=o.id) }}">PDF</a></td>
+  </tr>{% else %}<tr><td colspan="6">কোনো অর্ডার নেই।</td></tr>{% endfor %}
+  </tbody></table></div>
+</section>
+{% endblock %}

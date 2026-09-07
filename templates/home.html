@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}পণ্য | ছাদ বাগান{% endblock %}
+{% block content %}
+<section class="hero-strip">
+  <div>
+    <h1>সবুজ হোক আপনার ছাদ</h1>
+    <p>গাছ, সার, মাছ ও চাষাবাদের প্রয়োজনীয় পণ্য এক জায়গায়।</p>
+  </div>
+  <form class="search-form" method="get">
+    <input name="q" value="{{ q or '' }}" placeholder="পণ্য বা আইডি খুঁজুন">
+    <button class="primary-btn" type="submit">খুঁজুন</button>
+  </form>
+</section>
+
+{% if category %}
+<div class="filter-note">ক্যাটাগরি: <strong>{{ category }}</strong>{% if subcategory %} / {{ subcategory }}{% endif %} — <a href="{{ url_for('home') }}">সব পণ্য</a></div>
+{% endif %}
+
+<section class="product-grid">
+  {% for product in products %}
+  <article class="product-card">
+    <a href="{{ url_for('product_detail', product_id=product.id) }}"><img src="{{ url_for('product_image', product_id=product.id) }}" alt="{{ product.name }}"></a>
+    <div class="product-body">
+      <span class="pill">{{ product.category }} · {{ product.subcategory }}</span>
+      <h3><a href="{{ url_for('product_detail', product_id=product.id) }}">{{ product.name }}</a></h3>
+      <small>ID: {{ product.product_code }}</small>
+      <div class="price">৳{{ product.price|money }}</div>
+      <form method="post" action="{{ url_for('add_to_cart', product_id=product.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="quantity" value="1">
+        <button class="primary-btn" type="submit">কার্টে যোগ করুন</button>
+      </form>
+    </div>
+  </article>
+  {% else %}
+  <div class="empty-state">এই ফিল্টারে কোনো পণ্য পাওয়া যায়নি।</div>
+  {% endfor %}
+</section>
+{% endblock %}

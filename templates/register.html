@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}রেজিস্ট্রেশন | ছাদ বাগান{% endblock %}
+{% block content %}
+<section class="single-card narrow-card">
+  <div class="small-logo"><img src="{{ url_for('static', filename='images/chad-bagan.jpg') }}" alt="ছাদ বাগান"></div>
+  <h1>{{ 'অ্যাডমিন' if account_type == 'admin' else 'ইউজার' }} রেজিস্ট্রেশন</h1>
+  {% if account_type == 'admin' %}
+  <p class="notice">প্রথম অ্যাডমিন রেজিস্ট্রেশন সরাসরি সক্রিয় হবে। পরবর্তী অ্যাডমিন রেজিস্ট্রেশন বিদ্যমান অ্যাডমিনদের নোটিফিকেশন ও ইমেইলে যাবে এবং অনুমোদনের অপেক্ষায় থাকবে।</p>
+  {% else %}
+  <p class="notice">সক্রিয় একাউন্টগুলোর মধ্যে ইমেইল ও ফোন ইউনিক। ব্যান লিস্টে থাকা ইমেইল/ফোন দিয়ে রেজিস্ট্রেশন করা যাবে না।</p>
+  {% endif %}
+  <form method="post" class="stack-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label>নাম</label><input name="name" required value="{{ request.form.get('name','') }}">
+    <label>ইমেইল</label><input type="email" name="email" required value="{{ request.form.get('email','') }}">
+    <label>ফোন নাম্বার</label><input name="phone" required value="{{ request.form.get('phone','') }}">
+    <label>পাসওয়ার্ড</label><input type="password" name="password" minlength="8" required>
+    <label>পাসওয়ার্ড নিশ্চিত করুন</label><input type="password" name="confirm_password" minlength="8" required>
+    <button class="primary-btn" type="submit">রেজিস্টার</button>
+  </form>
+  <p class="auth-link"><a href="{{ url_for('login', mode=account_type) }}">লগইন পেজে ফিরুন</a></p>
+</section>
+{% endblock %}

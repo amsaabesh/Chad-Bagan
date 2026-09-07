@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}লগইন | ছাদ বাগান{% endblock %}
+{% block content %}
+<section class="auth-shell">
+  <div class="auth-art">
+    <img src="{{ url_for('static', filename='images/chad-bagan.jpg') }}" alt="ছাদ বাগান">
+  </div>
+  <div class="auth-card">
+    <h1>ছাদ বাগান</h1>
+    <p class="muted">সবুজ ছাদ, সুস্থ জীবন</p>
+
+    <div class="toggle-wrap">
+      <button type="button" id="userToggle" class="toggle-btn">ইউজার লগইন</button>
+      <button type="button" id="adminToggle" class="toggle-btn">অ্যাডমিন লগইন</button>
+    </div>
+
+    <form id="userForm" method="post" action="{{ url_for('login_user_route') }}" class="login-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label>ইমেইল বা ফোন</label>
+      <input name="identifier" required autocomplete="username">
+      <label>পাসওয়ার্ড</label>
+      <input type="password" name="password" required autocomplete="current-password">
+      <button class="primary-btn" type="submit">ইউজার হিসেবে লগইন</button>
+      <p class="auth-link">নতুন ইউজার? <a href="{{ url_for('register_user') }}">ইউজার রেজিস্ট্রেশন</a></p>
+    </form>
+
+    <form id="adminForm" method="post" action="{{ url_for('login_admin_route') }}" class="login-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label>ইমেইল বা ফোন</label>
+      <input name="identifier" required autocomplete="username">
+      <label>পাসওয়ার্ড</label>
+      <input type="password" name="password" required autocomplete="current-password">
+      <button class="primary-btn" type="submit">অ্যাডমিন হিসেবে লগইন</button>
+      <p class="auth-link">নতুন অ্যাডমিন? <a href="{{ url_for('register_admin') }}">অ্যাডমিন রেজিস্ট্রেশন</a></p>
+    </form>
+  </div>
+</section>
+<script>
+  const initial = {{ mode|tojson }};
+  const userForm = document.getElementById('userForm');
+  const adminForm = document.getElementById('adminForm');
+  const userToggle = document.getElementById('userToggle');
+  const adminToggle = document.getElementById('adminToggle');
+  function showMode(mode){
+    const isUser = mode === 'user';
+    userForm.style.display = isUser ? 'block' : 'none';
+    adminForm.style.display = isUser ? 'none' : 'block';
+    userToggle.classList.toggle('active', isUser);
+    adminToggle.classList.toggle('active', !isUser);
+  }
+  userToggle.addEventListener('click', () => showMode('user'));
+  adminToggle.addEventListener('click', () => showMode('admin'));
+  showMode(initial);
+</script>
+{% endblock %}

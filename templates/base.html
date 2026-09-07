@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}ছাদ বাগান{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  {% if current_user.is_authenticated %}
+  <header class="site-header">
+    <a class="brand" href="{{ url_for('admin_dashboard') if current_user.is_admin else url_for('home') }}">
+      <img src="{{ url_for('static', filename='images/chad-bagan.jpg') }}" alt="ছাদ বাগান">
+      <span>ছাদ বাগান</span>
+    </a>
+
+    {% if current_user.role == 'user' %}
+    <nav class="main-nav">
+      {% for category, subs in CATEGORIES.items() %}
+      <div class="nav-dropdown">
+        <a href="{{ url_for('home', category=category) }}">{{ category }}</a>
+        <div class="dropdown-menu">
+          {% for sub in subs %}
+          <a href="{{ url_for('home', category=category, subcategory=sub) }}">{{ sub }}</a>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </nav>
+    <div class="header-actions">
+      <a href="{{ url_for('cart') }}">কার্ট ({{ cart_count }})</a>
+      <a href="{{ url_for('orders') }}">অর্ডার</a>
+      <a href="{{ url_for('logout') }}">লগআউট</a>
+    </div>
+    {% else %}
+    <nav class="admin-nav">
+      <a href="{{ url_for('admin_dashboard') }}">ড্যাশবোর্ড</a>
+      <a href="{{ url_for('admin_products') }}">প্রডাক্ট</a>
+      <a href="{{ url_for('admin_users') }}">একাউন্ট</a>
+      <a href="{{ url_for('admin_blacklist') }}">ব্যান লিস্ট</a>
+      <a href="{{ url_for('admin_orders') }}">অর্ডার</a>
+      <a href="{{ url_for('admin_notifications') }}">নোটিফিকেশন{% if unread_count %} ({{ unread_count }}){% endif %}</a>
+      <a href="{{ url_for('logout') }}">লগআউট</a>
+    </nav>
+    {% endif %}
+  </header>
+  {% endif %}
+
+  <main class="page-wrap">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-stack">
+          {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer>
+    <strong>ছাদ বাগান</strong> — সবুজ ছাদ, সুস্থ জীবন<br>
+    <span>{{ CONTACT_INFO }}</span>
+  </footer>
+</body>
+</html>

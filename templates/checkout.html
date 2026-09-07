@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Checkout | ছাদ বাগান{% endblock %}
+{% block content %}
+<section class="two-col">
+  <div class="single-card">
+    <h1>অর্ডার নিশ্চিত করুন</h1>
+    <form method="post" class="stack-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label>ডেলিভারি ঠিকানা</label>
+      <textarea name="delivery_address" rows="5" required>{{ request.form.get('delivery_address','') }}</textarea>
+      <label>নোট (ঐচ্ছিক)</label>
+      <textarea name="customer_note" rows="3">{{ request.form.get('customer_note','') }}</textarea>
+      <button class="primary-btn" type="submit">অর্ডার করুন ও ইনভয়েস তৈরি করুন</button>
+    </form>
+  </div>
+  <div class="single-card order-summary">
+    <h2>সারাংশ</h2>
+    {% for item in items %}
+    <div class="summary-row"><span>{{ item.product.name }} × {{ item.quantity }}</span><strong>৳{{ (item.product.price * item.quantity)|money }}</strong></div>
+    {% endfor %}
+    <hr>
+    <div class="summary-row total"><span>মোট</span><strong>৳{{ total|money }}</strong></div>
+  </div>
+</section>
+{% endblock %}

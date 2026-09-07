@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}ব্যান লিস্ট{% endblock %}
+{% block content %}
+<section class="single-card">
+  <h1>ব্যান লিস্ট</h1>
+  <p class="notice">এখান থেকে কোনো ইমেইল/ফোন ডিলিট করলে সেটি দিয়ে আবার নতুন একাউন্ট রেজিস্টার করা যাবে। পুরোনো ব্যান করা একাউন্ট ব্যানই থাকবে।</p>
+  <div class="table-wrap"><table><thead><tr><th>ইমেইল</th><th>ফোন</th><th>কারণ</th><th>তারিখ</th><th></th></tr></thead><tbody>
+  {% for e in entries %}<tr><td>{{ e.email or '—' }}</td><td>{{ e.phone or '—' }}</td><td>{{ e.reason or '—' }}</td><td>{{ e.created_at.strftime('%Y-%m-%d') }}</td><td><form method="post" action="{{ url_for('admin_blacklist_delete', entry_id=e.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="danger-btn" type="submit">লিস্ট থেকে ডিলিট</button></form></td></tr>
+  {% else %}<tr><td colspan="5">ব্যান লিস্ট খালি।</td></tr>{% endfor %}
+  </tbody></table></div>
+</section>
+{% endblock %}

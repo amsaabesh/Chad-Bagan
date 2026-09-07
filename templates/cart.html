@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}কার্ট | ছাদ বাগান{% endblock %}
+{% block content %}
+<section class="single-card">
+  <h1>আপনার কার্ট</h1>
+  {% if items %}
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>পণ্য</th><th>দাম</th><th>পরিমাণ</th><th>সাবটোটাল</th><th></th></tr></thead>
+        <tbody>
+        {% for item in items %}
+          <tr>
+            <td>{{ item.product.name }}<br><small>{{ item.product.product_code }}</small></td>
+            <td>৳{{ item.product.price|money }}</td>
+            <td><input class="qty" form="cart-update" type="number" min="0" max="99" name="qty_{{ item.id }}" value="{{ item.quantity }}"></td>
+            <td>৳{{ (item.product.price * item.quantity)|money }}</td>
+            <td>
+              <form method="post" action="{{ url_for('remove_from_cart', item_id=item.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="link-button" type="submit">মুছুন</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <form id="cart-update" method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    </form>
+    <div class="cart-total">মোট: <strong>৳{{ total|money }}</strong></div>
+    <div class="actions-row">
+      <button class="secondary-btn" form="cart-update" type="submit">কার্ট আপডেট</button>
+      <a class="primary-btn inline-btn" href="{{ url_for('checkout') }}">কিনুন / Checkout</a>
+    </div>
+  {% else %}
+  <div class="empty-state">কার্ট খালি। <a href="{{ url_for('home') }}">পণ্য দেখুন</a></div>
+  {% endif %}
+</section>
+{% endblock %}

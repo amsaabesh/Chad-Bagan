@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}{{ product.name }} | ছাদ বাগান{% endblock %}
+{% block content %}
+<section class="detail-grid single-card">
+  <img class="detail-image" src="{{ url_for('product_image', product_id=product.id) }}" alt="{{ product.name }}">
+  <div>
+    <span class="pill">{{ product.category }} · {{ product.subcategory }}</span>
+    <h1>{{ product.name }}</h1>
+    <p>ID: <strong>{{ product.product_code }}</strong></p>
+    <div class="price big-price">৳{{ product.price|money }}</div>
+    <p class="details-text">{{ product.details or 'বিস্তারিত তথ্য শিগগিরই যোগ করা হবে।' }}</p>
+    <form method="post" action="{{ url_for('add_to_cart', product_id=product.id) }}" class="inline-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <input type="number" name="quantity" min="1" max="99" value="1">
+      <button class="primary-btn" type="submit">কার্টে যোগ করুন</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

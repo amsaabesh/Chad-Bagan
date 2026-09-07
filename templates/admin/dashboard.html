@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}অ্যাডমিন ড্যাশবোর্ড{% endblock %}
+{% block content %}
+<h1>অ্যাডমিন ড্যাশবোর্ড</h1>
+<section class="stats-grid">
+  <div class="stat-card"><span>সক্রিয় ইউজার</span><strong>{{ stats.users }}</strong></div>
+  <div class="stat-card"><span>ভিজিবল প্রডাক্ট</span><strong>{{ stats.products }}</strong></div>
+  <div class="stat-card"><span>অর্ডার</span><strong>{{ stats.orders }}</strong></div>
+  <div class="stat-card"><span>পেন্ডিং অ্যাডমিন</span><strong>{{ stats.pending_admins }}</strong></div>
+  <div class="stat-card"><span>ব্যান লিস্ট</span><strong>{{ stats.blacklist }}</strong></div>
+</section>
+<section class="single-card">
+  <div class="section-head"><h2>সাম্প্রতিক অর্ডার</h2><a href="{{ url_for('admin_orders') }}">সব দেখুন</a></div>
+  <div class="table-wrap"><table><thead><tr><th>ইনভয়েস</th><th>ক্রেতা</th><th>মোট</th><th>স্ট্যাটাস</th></tr></thead><tbody>
+  {% for order in recent_orders %}<tr><td><a href="{{ url_for('invoice', order_id=order.id) }}">{{ order.invoice_no }}</a></td><td>{{ order.user.name }}</td><td>৳{{ order.total_amount|money }}</td><td>{{ order.status }}</td></tr>
+  {% else %}<tr><td colspan="4">কোনো অর্ডার নেই।</td></tr>{% endfor %}
+  </tbody></table></div>
+</section>
+{% endblock %}

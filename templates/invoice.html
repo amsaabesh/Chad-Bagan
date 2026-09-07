@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}{{ order.invoice_no }}{% endblock %}
+{% block content %}
+<section class="single-card invoice-card" id="invoiceArea">
+  <div class="invoice-head">
+    <div><h1>ছাদ বাগান</h1><p>সবুজ ছাদ, সুস্থ জীবন</p></div>
+    <div class="invoice-meta"><strong>Invoice</strong><br>{{ order.invoice_no }}<br>{{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+  </div>
+  <div class="invoice-customer">
+    <strong>ক্রেতা:</strong> {{ order.user.name }}<br>
+    {{ order.user.email }} · {{ order.user.phone }}<br>
+    <strong>ঠিকানা:</strong> {{ order.delivery_address }}
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>পণ্য</th><th>আইডি</th><th>পরিমাণ</th><th>দাম</th><th>সাবটোটাল</th></tr></thead>
+      <tbody>
+      {% for item in order.items %}
+      <tr>
+        <td>{{ item.product_name }}</td><td>{{ item.product_code }}</td><td>{{ item.quantity }}</td>
+        <td>৳{{ item.unit_price|money }}</td><td>৳{{ (item.unit_price * item.quantity)|money }}</td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="invoice-total">মোট: ৳{{ order.total_amount|money }}</div>
+  <div class="summary-row"><span>স্ট্যাটাস</span><strong>{{ order.status }}</strong></div>
+  {% if order.customer_note %}<p><strong>নোট:</strong> {{ order.customer_note }}</p>{% endif %}
+  <div class="actions-row no-print">
+    <button class="secondary-btn" onclick="window.print()">Print / Save as PDF</button>
+    <a class="primary-btn inline-btn" href="{{ url_for('invoice_pdf', order_id=order.id) }}">PDF Download</a>
+  </div>
+</section>
+{% endblock %}

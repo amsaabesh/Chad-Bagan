@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}একাউন্ট নিষিদ্ধ{% endblock %}
+{% block content %}
+<section class="single-card ban-card">
+  <h1>আপনার একাউন্ট আজীবনের জন্য নিষিদ্ধ করা হয়েছে, ব্যান উঠাতে চাইলে অ্যাডমিনদের সাথে যোগাযোগ করুন</h1>
+  <a class="primary-btn inline-btn" href="mailto:mahiraabesh@gmail.com?subject=ছাদ%20বাগান%20ব্যান%20একাউন্ট%20সহায়তা">Contact Us</a>
+  <div class="contact-box">
+    <strong>Info:</strong><br>
+    Designed By: Ahmed Mahir Shoaib.<br>
+    If you need any help, contact with us at mahiraabesh@gmail.com
+  </div>
+  <a href="{{ url_for('login') }}">লগইনে ফিরুন</a>
+</section>
+{% endblock %}

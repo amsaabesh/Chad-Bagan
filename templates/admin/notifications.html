@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}অ্যাডমিন নোটিফিকেশন{% endblock %}
+{% block content %}
+<section class="two-col">
+  <div class="single-card">
+    <h1>নোটিফিকেশন</h1>
+    <div class="notification-list">
+    {% for n in notifications %}
+      <div class="notification {% if not n.is_read %}unread{% endif %}">
+        <strong>{{ n.title }}</strong><p>{{ n.message }}</p><small>{{ n.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+        {% if not n.is_read %}<form method="post" action="{{ url_for('admin_notification_read', notification_id=n.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="link-button" type="submit">পড়েছি</button></form>{% endif %}
+      </div>
+    {% else %}<p>কোনো নোটিফিকেশন নেই।</p>{% endfor %}
+    </div>
+  </div>
+  <div class="single-card">
+    <h2>পেন্ডিং অ্যাডমিন</h2>
+    {% for a in pending_admins %}
+      <div class="pending-card"><strong>{{ a.name }}</strong><br>{{ a.email }}<br>{{ a.phone }}
+        <form method="post" action="{{ url_for('admin_approve_admin', user_id=a.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="primary-btn" type="submit">Approve Admin</button></form>
+      </div>
+    {% else %}<p>কোনো পেন্ডিং অ্যাডমিন নেই।</p>{% endfor %}
+  </div>
+</section>
+{% endblock %}

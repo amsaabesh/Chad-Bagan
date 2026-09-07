@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}প্রডাক্ট ম্যানেজমেন্ট{% endblock %}
+{% block content %}
+<div class="section-head"><h1>প্রডাক্ট ম্যানেজমেন্ট</h1><a class="primary-btn inline-btn" href="{{ url_for('admin_product_add') }}">+ নতুন প্রডাক্ট</a></div>
+<section class="single-card">
+  <div class="table-wrap"><table><thead><tr><th>ছবি</th><th>আইডি</th><th>নাম</th><th>ক্যাটাগরি</th><th>দাম</th><th>স্ট্যাটাস</th><th>অ্যাকশন</th></tr></thead><tbody>
+  {% for p in products %}
+  <tr>
+    <td><img class="thumb" src="{{ url_for('product_image', product_id=p.id) }}" alt=""></td><td>{{ p.product_code }}</td><td>{{ p.name }}</td><td>{{ p.category }} / {{ p.subcategory }}</td><td>৳{{ p.price|money }}</td><td>{{ 'Visible' if p.is_visible else 'Hidden' }}</td>
+    <td class="actions-cell"><a href="{{ url_for('admin_product_edit', product_id=p.id) }}">Edit</a><form method="post" action="{{ url_for('admin_product_toggle', product_id=p.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="link-button" type="submit">{{ 'Hide' if p.is_visible else 'Show' }}</button></form></td>
+  </tr>
+  {% else %}<tr><td colspan="7">এখনো কোনো পণ্য যোগ করা হয়নি।</td></tr>{% endfor %}
+  </tbody></table></div>
+</section>
+{% endblock %}
